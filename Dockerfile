@@ -1,7 +1,7 @@
 FROM maven:latest
 
 
-WORKDIR /helloworld
+WORKDIR /grepy
 COPY * ./
 
 RUN mvn clean install

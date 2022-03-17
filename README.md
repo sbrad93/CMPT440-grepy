@@ -3,13 +3,14 @@ Simple hello world application template
 
 ## Usage
 ```
-~/helloworld$ java -jar target/helloworld-0.0.1-SNAPSHOT-jar-with-dependencies.jar -h
-helloworld
-Version: 0.0.1
-usage: helloworld
+~/grepy$ java -jar target/grepy-0.0.2-SNAPSHOT-jar-with-dependencies.jar -h
+grepy
+Version: 0.0.2
+usage: grepy
  -h   Display this help text
  -v   Verbose mode
 ```
+##FINISH UPDATING README
 
 ## Using the Template
 1. Follow the [instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) to create a repository based on this GitHub template.

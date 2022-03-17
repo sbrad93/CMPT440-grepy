@@ -1,13 +1,13 @@
-package edu.marist.gildein;
+package edu.marist.brady;
 
 /**
  * App utility class for constants.
  */
 public final class CONSTANTS {
     /** Application name. */
-    private static String appName = "helloworld";
+    private static String appName = "grepy";
     /** Application version. */
-    private static String version = "0.0.1";
+    private static String version = "0.0.2";
 
     /**
      * CONSTANTS constructor.

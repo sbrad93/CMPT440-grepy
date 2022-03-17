@@ -1,4 +1,4 @@
-package edu.marist.gildein;
+package edu.marist.brady;
 
 import org.junit.jupiter.api.Test;
 
