@@ -1,22 +1,26 @@
 package edu.marist.brady;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 //NFA class
 public final class NFA {
 
-    private List<State> nfa;
+    //private List<State> nfa;
+
+    private LinkedList<Transition> nfa;
 
     public NFA() {
-        this.nfa = new ArrayList<State>();;
+        //this.nfa = new LinkedList<State>();
+
+        this.nfa = new LinkedList<Transition>();
     }
 
-    public List<State> getNFA() {
+    public LinkedList<Transition> getNFA() {
         return nfa;
     }
 
-    public void setNFA(List<State> newNFA) {
+    public void setNFA(LinkedList<Transition> newNFA) {
         this.nfa = newNFA;
     }
 }

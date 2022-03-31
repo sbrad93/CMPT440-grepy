@@ -17,8 +17,12 @@ public final class App {
         Utils utils = new Utils();
         utils.processArgs(args);
 
+        //read input file
         RegexReader reader = new RegexReader();
         reader.read();
+
+        //generate NFA based on first line of input file
+        reader.createNFA();
 
         System.exit(returnCode);
     }
