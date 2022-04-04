@@ -3,9 +3,8 @@ package edu.marist.brady;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -20,7 +19,7 @@ public final class RegexReader {
     public RegexReader() {
         this.myRegex = "";
         this.myAlphabet = new HashSet<Character>();
-    }
+    }//RegexReader constructor
 
     //reads input file and learns alphabet of language
     public void read() {
@@ -58,10 +57,9 @@ public final class RegexReader {
         myRegex = this.addConcat(myRegex);
         System.out.println(myRegex);
 
-        System.out.println(isAlphabet('x'));
-        System.out.println(isAlphabet('a'));
+        // System.out.println(isAlphabet('x'));
+        // System.out.println(isAlphabet('a'));
         //---------------------------
-
     } //read
 
     //returns a set of all non-operator symbols in language
@@ -109,22 +107,26 @@ public final class RegexReader {
         return res;
     }//addConcat
 
+    //indicates precedence of regex operator
     private int precedence(char c) {
         if(c == '*') return 4;
         else if(c == '+') return 3;
         else if(c == '.') return 2;
         else return 1;
-    }
+    }//precedence
 
     //creates nfa based on regex expression
     public void createNFA() {
 
+        //add concatenation to inital regex
         String regex = addConcat(myRegex);
         int addedSymbols = 0;
 
+        //clear da stacks
         nfaStack.clear();
         operators.clear();
 
+        //doesn't account for precedence...yet
         for (int i=0; i<regex.length(); i++) {
 
             if (isAlphabet(regex.charAt(i)) && addedSymbols < 2) {
@@ -132,21 +134,17 @@ public final class RegexReader {
                 addedSymbols++;
             }
 
-            // else if (addedSymbols == 2) {
-            //     addedSymbols = 0;
-            //     compute();
-            // }
-
             else if (regex.charAt(i) == '*') {
                 operators.add(regex.charAt(i));
                 compute();
-                //kleene();
+            }
+
+            else if (regex.charAt(i) == '+') {
+                operators.add(regex.charAt(i));
             }
 
             else if (regex.charAt(i) == '.') {
                 operators.add(regex.charAt(i));
-                // addSymbol(regex.charAt(i+1));
-                // concat();
             }
 
             if (addedSymbols == 2) {
@@ -154,24 +152,37 @@ public final class RegexReader {
                 compute();
             }
 
+            //thoughts
             // else {
             //     while (!operators.isEmpty() && precedence(regex.charAt(i)) > precedence(operators.get(operators.size()-1)))
             //     //switch statement
             //     compute();
             // }
-
-        }
+        }//createNFA
 
         //testing ---------------------------
+        //output format in logical transition order
         for (int i=0; i<nfaStack.size(); i++){
-            for (int j=0; j< nfaStack.get(i).getNFA().size(); j++) {
-                System.out.println("NFA " + i);
+            for (int j=0; j< nfaStack.get(i).getNFA().size(); j++)
                 System.out.println(nfaStack.get(i).getNFA().get(j).transitionString());
+        }
+        //System.out.println("State Count: " + stateCount);
+
+        //System.out.println("NFA stack size: " + nfaStack.size());
+
+        //another output format using hashmap
+        for (Map.Entry<Character, ArrayList<Map.Entry<State, State>>> entry : Transition.getTransitionMap().entrySet()) {
+            char key = entry.getKey();
+            ArrayList<Map.Entry<State, State>> value = entry.getValue();
+
+            System.out.println("-------------");
+            System.out.println("key: " + key);
+
+            for (int i=0; i<value.size(); i++) {
+                System.out.println("Start: " + value.get(i).getKey().stateID +
+                    "\nEnd: " + value.get(i).getValue().stateID + "\n");
             }
         }
-        System.out.println("State Count: " + stateCount);
-
-        System.out.println("NFA stack size: " + nfaStack.size());
         //------------------------------------
     }
 
@@ -180,17 +191,15 @@ public final class RegexReader {
         State start = new State (stateCount);
         State end = new State (stateCount);
 
-        //add symbol transition from start state to next state
+        //create symbol transition from start state to end state
         Transition t1 = new Transition(sym, start, end);
         
         NFA tempNFA = new NFA();
 
+        //add new transition
         tempNFA.getNFA().add(t1);
 
-        //start.addTransition(end, sym);
-        //tempNFA.getNFA().add(start);
-        //tempNFA.getNFA().add(end);
-
+        //push tempNFA to nfa stack
         nfaStack.push(tempNFA);
     }//addSymbol
 
@@ -201,17 +210,16 @@ public final class RegexReader {
             char charAt = operators.pop();
 
             switch(charAt) {
-                case('+'):
-                    //union();
-                    break;
-                
-                case('.'):
-                    System.out.println("ayo");
-                    concat();
-                    break;
-                
                 case('*'):
                     kleene();
+                    break;
+
+                case('+'):
+                    union();
+                    break;
+
+                case('.'):
+                    concat();
                     break;
 
                 default:
@@ -221,71 +229,150 @@ public final class RegexReader {
         }
     }//compute
 
-    //union operation in Thompson's algorithm
+    //union (+) operation in Thompson's algorithm
+    //kinda brute force for now
     private void union() {
-        // NFA tempNfa1 = nfaStack.pop();
-        // NFA tempNfa2 = nfaStack.pop();
+        NFA tempNFA2 = nfaStack.pop();
+        NFA tempNFA1 = nfaStack.pop();
 
-        // //new states to compute union operation
-        // State start = new State(stateCount);
-        // State next = new State(stateCount);
+        //at this point there are only two symbols added (ex: a+b --> only four states, 2 transitions)
+        //another symbol must be added for the middle portion of final nfa (ex: a+b ---> another a transition needed)
 
-        // Transition t1 = new Transition('e', start, tempNfa1.getNFA().getFirst().startState);
-        // Transition t2 = new Transition('e', start, tempNfa2.getNFA().getFirst().startState);
+        //add additional symbol
+        addSymbol(tempNFA1.getNFA().getLast().transitionSymbol);
 
+        //create temporary nfa with this new transtion
+        NFA tempNFA3 = nfaStack.pop();
+
+        //new transition needs to be placed between intial two
+        //start/end states need to switch for tempNFA3 and tempNFA2
+
+        //local variables for start/end states for better readability
+        int temp1Start = tempNFA2.getNFA().getLast().startState.stateID;
+        int temp3Start = tempNFA3.getNFA().getLast().startState.stateID;
+        int temp1End = tempNFA2.getNFA().getLast().endState.stateID;
+        int temp3End = tempNFA3.getNFA().getLast().endState.stateID;
+
+        // System.out.println((temp1Start));
+        // System.out.println((temp3Start));
+        // System.out.println((temp1End));
+        // System.out.println((temp3End));
+
+        //switch start states
+        tempNFA2.getNFA().getLast().startState.setStateID(temp1Start+=2);
+        tempNFA3.getNFA().getLast().startState.setStateID(temp3Start-=2);
+
+        //switch end states
+        tempNFA2.getNFA().getLast().endState.setStateID(temp1End+=2);
+        tempNFA3.getNFA().getLast().endState.setStateID(temp3End-=2);
+
+        //create epsilon transitions
+        Transition t1 = new Transition('e', tempNFA1.getNFA().getLast().endState, tempNFA3.getNFA().getFirst().startState);
+        Transition t2 = new Transition('e', tempNFA1.getNFA().getLast().endState, tempNFA2.getNFA().getFirst().startState);
+        Transition t3 = new Transition('e', tempNFA3.getNFA().getLast().endState, tempNFA3.getNFA().getFirst().startState);
+        Transition t4 = new Transition('e', tempNFA3.getNFA().getLast().endState, tempNFA2.getNFA().getFirst().startState);
+
+        //add epsilon transitions between first two temp nfa's
+        tempNFA1.getNFA().add(t1);
+        tempNFA1.getNFA().add(t2);
+
+        //add 'second' temp nfa to first
+        for (int i=0; i<tempNFA3.getNFA().size(); i++) {
+            tempNFA1.getNFA().add(tempNFA3.getNFA().get(i).getTransition());
+        }
+
+        //add epsilon transitions between 'second' nfa and 'third'
+        tempNFA1.getNFA().add(t3);
+        tempNFA1.getNFA().add(t4);
+
+        //add 'third' nfa to the first
+        for (int i=0; i<tempNFA2.getNFA().size(); i++) {
+            tempNFA1.getNFA().add(tempNFA2.getNFA().get(i).getTransition());
+        }
+
+        //add NFA back into nfa stack
+        nfaStack.push(tempNFA1);
     }//union
 
-    //concatentation operation in Thompson's algorithm
+    //concatentation (.) operation in Thompson's algorithm
     private void concat() {
-        NFA tempNFA1 = nfaStack.pop();
+
         NFA tempNFA2 = nfaStack.pop();
+        NFA tempNFA1 = nfaStack.pop();
+
+        // System.out.println("CONCAT temp NFA base");
+        // for (int j=0; j< tempNFA2.getNFA().size(); j++) {
+        //     System.out.println(tempNFA2.getNFA().get(j).transitionString());
+        // }
 
         //create epsilon transition from the end of tempNFA1 to tempNFA2
-        Transition t1 = new Transition('e', tempNFA2.getNFA().getLast().endState, tempNFA1.getNFA().getFirst().startState);
+        //System.out.println("Trans..Start ID: " + tempNFA2.getNFA().getLast().endState.stateID);
+        //System.out.println("Trans..End ID: " + tempNFA1.getNFA().getFirst().startState.stateID);
+        Transition t1 = new Transition('e', tempNFA1.getNFA().getLast().endState, tempNFA2.getNFA().getFirst().startState);
 
         //add new epsilon transition to tempNFA1
-        tempNFA2.getNFA().add(t1);
+        tempNFA1.getNFA().add(t1);
 
         //combine states into one NFA
-        for (int i=0; i<tempNFA1.getNFA().size(); i++) {
-            tempNFA2.getNFA().add(tempNFA1.getNFA().get(i).getTransition());
+        for (int i=0; i<tempNFA2.getNFA().size(); i++) {
+            tempNFA1.getNFA().add(tempNFA2.getNFA().get(i).getTransition());
         }
 
         //add NFA back into stack
-        nfaStack.push(tempNFA2);
-
+        nfaStack.push(tempNFA1);
     }//concatenation
 
-    //kleene star operation in Thompson's algorithm
+    //kleene star (*) operation in Thompson's algorithm
     private void kleene() {
+
         //get top NFA from stack
         NFA tempNFA = nfaStack.pop();
 
-        //get last transition
+        //get previous transition
         Transition prev = tempNFA.getNFA().getLast().getTransition();
 
-        //create new states
-        State start = new State(stateCount);
-        State next = new State(stateCount);
+        //get previous transition start/end states
+        int prevStartID = prev.startState.stateID;
+        int prevEndID = prev.endState.stateID;
 
-        //epsilon transitions
-        Transition t1 = new Transition('e', start, next);
-        Transition t2 = new Transition('e', start, tempNFA.getNFA().getFirst().startState);
+        // System.out.println("PREVIOUS");
+        // System.out.println(prev.transitionSymbol);
+        // System.out.println(prevStartID);
+        // System.out.println(prevEndID);
 
-        Transition t3 = new Transition('e', tempNFA.getNFA().getLast().endState, next);
-        Transition t4 = new Transition('e', tempNFA.getNFA().getLast().endState, tempNFA.getNFA().getLast().startState);
+        //epsilon transitions must be added before and after symbol transition
+        //state ID's must be updated
 
-        //add transitions to tempNFA
+        //create new start/end states
+        State start = new State(prevStartID);
+        //System.out.println("State ID: " + start.stateID);
+        State next = new State(prevEndID+=2);
+        //System.out.println("State ID: " + next.stateID);
+
+        //update prev state IDs
+        prev.startState.setStateID(prevStartID+=1);
+        //System.out.println("State ID: " + prev.startState.stateID);
+        prev.endState.setStateID(prevEndID-=1);
+        //System.out.println("State ID: " + prev.endState.stateID);
+
+        //create epsilon transitions
+        Transition t1 = new Transition('e', start, tempNFA.getNFA().getFirst().startState);
+        Transition t2 = new Transition('e', start, next);
+
+        Transition t3 = new Transition('e', tempNFA.getNFA().getLast().endState, tempNFA.getNFA().getLast().startState);
+        Transition t4 = new Transition('e', tempNFA.getNFA().getLast().endState, next);
+
+        //clear initial transitions
         tempNFA.getNFA().clear();
 
+        //add new epsilon transitions
         tempNFA.getNFA().add(t1);
         tempNFA.getNFA().add(t2);
         tempNFA.getNFA().add(prev);
         tempNFA.getNFA().add(t3);
         tempNFA.getNFA().add(t4);
 
+        //add new nfa to stack
         nfaStack.push(tempNFA);
-
     }//kleene
-
-}
+}//RegexReader

@@ -1,32 +1,38 @@
 package edu.marist.brady;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 public final class Transition {
 
     public State startState;
     public State endState;
-    private char transitionSymbol;
-    private Map<Character, ArrayList<State>> transitionMap;
-    private ArrayList<State> transitions;
+    public char transitionSymbol;
+    public static Map<Character, ArrayList<Entry<State, State>>> transitionMap = new HashMap<Character, ArrayList<Entry<State, State>>>();
+    private ArrayList<Entry<State, State>> transitions;
 
-    public Transition(char key, State start, State next) {
+    public Transition(char key, State start, State end) {
         this.startState = start;
-        this.endState = next;
+        this.endState = end;
         this.transitionSymbol = key;
+        this.addToMap();
+    }//Transition constructor
 
-        this.transitionMap = new TreeMap<Character, ArrayList<State>>();
-
-        transitions = this.transitionMap.get(key);
+    private void addToMap() {
+        //list of states with a given key transition
+        transitions = transitionMap.get(this.transitionSymbol);
 
         if (transitions == null) {
-            transitions = new ArrayList<State>();
-            this.transitionMap.put(key,transitions);
-        }
+            transitions = new ArrayList<Entry<State, State>>();
+            transitionMap.put(this.transitionSymbol,transitions);
+ }
+        //add start/end pair to transition list
+        //https://stackoverflow.com/questions/6121246/list-of-entries-how-to-add-a-new-entry
+        transitions.add(new java.util.AbstractMap.SimpleEntry<State, State>(this.startState, this.endState));
 
-        transitions.add(next);
     }
 
     //temporary string method for reading transitions
@@ -38,5 +44,14 @@ public final class Transition {
 
     public Transition getTransition() {
         return this;
+    }//getTransition
+
+    public static Map<Character, ArrayList<Entry<State, State>>> getTransitionMap() {
+        return transitionMap;
     }
+
+    // public void setTransitionSymbol(char newSym) {
+    //     this.transitionSymbol = newSym;
+    //     this.addToMap();
+    // }
 }
