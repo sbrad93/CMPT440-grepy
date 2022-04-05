@@ -39,7 +39,8 @@ public final class Transition {
     public String transitionString() {
         return "Start ID: " + this.startState.stateID + 
         "\nNext ID: " + this.endState.stateID +
-        "\nSymbol: " + this.transitionSymbol + "\n";
+        "\nSymbol: " + this.transitionSymbol + 
+        "\nIsEndStateAcceptState: " + this.endState.acceptState + "\n";
     }
 
     public Transition getTransition() {

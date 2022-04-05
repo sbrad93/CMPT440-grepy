@@ -19,4 +19,8 @@ public final class State {
     public void setStateID(int newID) {
         this.stateID = newID;
     }//setState
+
+    public void setAcceptState(boolean foo) {
+        this.acceptState = foo;
+    }
 }

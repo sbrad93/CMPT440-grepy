@@ -57,6 +57,14 @@ public final class RegexReader {
         myRegex = this.addConcat(myRegex);
         System.out.println(myRegex);
 
+        myRegex = orderRegex(myRegex);
+        System.out.println(myRegex);
+
+        myRegex = this.addConcat(myRegex);
+        System.out.println(myRegex);
+
+        // String tempRegex = orderRegex(myRegex);
+        // System.out.println(tempRegex);
         // System.out.println(isAlphabet('x'));
         // System.out.println(isAlphabet('a'));
         //---------------------------
@@ -107,16 +115,40 @@ public final class RegexReader {
         return res;
     }//addConcat
 
-    //indicates precedence of regex operator
-    private int precedence(char c) {
-        if(c == '*') return 4;
-        else if(c == '+') return 3;
-        else if(c == '.') return 2;
-        else return 1;
-    }//precedence
+    // //indicates precedence of regex operator
+    // private int precedence(char c) {
+    //     if(c == '*') return 4;
+    //     else if(c == '+') return 3;
+    //     else if(c == '.') return 2;
+    //     else return 1;
+    // }//precedence
+
+    //reorders regex string to match operator precedence
+    public String orderRegex(String regex) {
+        String kleeneString = "";
+        String unionString = "";
+        String res = "";
+        String[] regexParts = regex.split("\\.");
+
+        for (int i=0; i<regexParts.length; i++) {
+            // System.out.println(regexParts.length);
+            // System.out.println(regexParts[i]);
+            if (regexParts[i].contains("*") )
+                kleeneString += regexParts[i];
+            else if (regexParts[i].contains("+"))
+                unionString += regexParts[i];
+            else kleeneString += regexParts[i];
+        }
+
+        res = kleeneString + unionString;
+        
+        return res;
+    }
 
     //creates nfa based on regex expression
-    public void createNFA() {
+    public NFA createNFA() {
+
+        NFA finalNFA = null;
 
         //add concatenation to inital regex
         String regex = addConcat(myRegex);
@@ -126,7 +158,6 @@ public final class RegexReader {
         nfaStack.clear();
         operators.clear();
 
-        //doesn't account for precedence...yet
         for (int i=0; i<regex.length(); i++) {
 
             if (isAlphabet(regex.charAt(i)) && addedSymbols < 2) {
@@ -139,11 +170,7 @@ public final class RegexReader {
                 compute();
             }
 
-            else if (regex.charAt(i) == '+') {
-                operators.add(regex.charAt(i));
-            }
-
-            else if (regex.charAt(i) == '.') {
+            else if (regex.charAt(i) == '+' || regex.charAt(i) == '.') {
                 operators.add(regex.charAt(i));
             }
 
@@ -151,24 +178,17 @@ public final class RegexReader {
                 addedSymbols--;
                 compute();
             }
+        }
 
-            //thoughts
-            // else {
-            //     while (!operators.isEmpty() && precedence(regex.charAt(i)) > precedence(operators.get(operators.size()-1)))
-            //     //switch statement
-            //     compute();
-            // }
-        }//createNFA
+        finalNFA = nfaStack.pop();
+        
+        finalNFA.getNFA().get(finalNFA.getNFA().size()-1).endState.setAcceptState(true);
 
         //testing ---------------------------
-        //output format in logical transition order
-        for (int i=0; i<nfaStack.size(); i++){
-            for (int j=0; j< nfaStack.get(i).getNFA().size(); j++)
-                System.out.println(nfaStack.get(i).getNFA().get(j).transitionString());
-        }
-        //System.out.println("State Count: " + stateCount);
 
-        //System.out.println("NFA stack size: " + nfaStack.size());
+        //output format in logical transition order
+        for (int j=0; j< finalNFA.getNFA().size(); j++)
+                System.out.println(finalNFA.getNFA().get(j).transitionString());
 
         //another output format using hashmap
         for (Map.Entry<Character, ArrayList<Map.Entry<State, State>>> entry : Transition.getTransitionMap().entrySet()) {
@@ -183,8 +203,12 @@ public final class RegexReader {
                     "\nEnd: " + value.get(i).getValue().stateID + "\n");
             }
         }
+
         //------------------------------------
-    }
+
+        return finalNFA;
+        
+    }//createNFA
 
     //adds nfa transition for alphabet symbols
     private void addSymbol(char sym) {
@@ -340,8 +364,8 @@ public final class RegexReader {
         // System.out.println(prevStartID);
         // System.out.println(prevEndID);
 
-        //epsilon transitions must be added before and after symbol transition
-        //state ID's must be updated
+        //epsilon transitions are added before and after symbol transition
+        //state ID's must be updated accordingly
 
         //create new start/end states
         State start = new State(prevStartID);
