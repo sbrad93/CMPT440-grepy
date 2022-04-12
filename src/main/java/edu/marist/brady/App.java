@@ -18,6 +18,7 @@ public final class App {
         utils.processArgs(args);
 
         NFA nfa = null;
+        DFA dfa = null;
 
         //read input file
         RegexReader reader = new RegexReader();
@@ -25,6 +26,8 @@ public final class App {
 
         //generate NFA based on first line of input file
         nfa = reader.createNFA();
+
+        reader.createDFA(nfa);
 
         System.exit(returnCode);
     }

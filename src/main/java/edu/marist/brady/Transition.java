@@ -3,7 +3,6 @@ package edu.marist.brady;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.Map.Entry;
 
 public final class Transition {
@@ -11,7 +10,7 @@ public final class Transition {
     public State startState;
     public State endState;
     public char transitionSymbol;
-    public static Map<Character, ArrayList<Entry<State, State>>> transitionMap = new HashMap<Character, ArrayList<Entry<State, State>>>();
+    private static Map<Character, ArrayList<Entry<State, State>>> transitionMap = new HashMap<Character, ArrayList<Entry<State, State>>>();
     private ArrayList<Entry<State, State>> transitions;
 
     public Transition(char key, State start, State end) {
@@ -49,6 +48,14 @@ public final class Transition {
 
     public static Map<Character, ArrayList<Entry<State, State>>> getTransitionMap() {
         return transitionMap;
+    }//getTransitionMap
+
+    public static ArrayList<Entry<State, State>> getAllTransitions(char c) {
+        return transitionMap.get(c);
+    }//getAllTransitions
+
+    public static void clearTransitions() {
+        transitionMap.clear();
     }
 
     // public void setTransitionSymbol(char newSym) {
