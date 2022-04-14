@@ -11,26 +11,25 @@ public final class Transition {
     public State endState;
     public char transitionSymbol;
     private static Map<Character, ArrayList<Entry<State, State>>> transitionMap = new HashMap<Character, ArrayList<Entry<State, State>>>();
-    private ArrayList<Entry<State, State>> transitions;
+    private static ArrayList<Entry<State, State>> transitions;
 
     public Transition(char key, State start, State end) {
         this.startState = start;
         this.endState = end;
         this.transitionSymbol = key;
-        this.addToMap();
     }//Transition constructor
 
-    private void addToMap() {
+    public static void addToMap(Transition transition) {
         //list of states with a given key transition
-        transitions = transitionMap.get(this.transitionSymbol);
+        transitions = transitionMap.get(transition.transitionSymbol);
 
         if (transitions == null) {
             transitions = new ArrayList<Entry<State, State>>();
-            transitionMap.put(this.transitionSymbol,transitions);
+            transitionMap.put(transition.transitionSymbol,transitions);
  }
         //add start/end pair to transition list
         //https://stackoverflow.com/questions/6121246/list-of-entries-how-to-add-a-new-entry
-        transitions.add(new java.util.AbstractMap.SimpleEntry<State, State>(this.startState, this.endState));
+        transitions.add(new java.util.AbstractMap.SimpleEntry<State, State>(transition.startState, transition.endState));
 
     }
 
