@@ -458,13 +458,17 @@ public final class RegexReader {
 
     private boolean isOnlyKleene(String regex) {
         boolean ans = false;
+        int numUnion = 0;
         char[] chars = getChars(regex);
 
         for (int i=0; i<chars.length; i++) {
             if (chars[i] == '+') {
-                ans = false;
+                numUnion++;
             }
-            else ans = true;
+        }
+
+        if(numUnion == 0) {
+            ans = true;
         }
         return ans;
     }
@@ -511,6 +515,8 @@ public final class RegexReader {
             if (i != 0 && dfa.getDFA().get(i).startState.stateID == dfa.getDFA().get(i).endState.stateID &&
                 dfa.getDFA().get(i-1).startState.stateID == dfa.getDFA().get(i-1).endState.stateID) {
                     Transition t = new Transition (dfa.getDFA().get(i).transitionSymbol, dfa.getDFA().get(i-1).endState, dfa.getDFA().get(i).startState);
+                    //addtional transitions to connect kleene star operations added to end of dfa
+                    t.isFillerTransition = true;
                     dfa.getDFA().add(t);
             }
         }
@@ -532,10 +538,133 @@ public final class RegexReader {
         System.out.println("DFA");
         printDFA(dfa);
         printTransitionMap();
+        validate(dfa, "bbbbaaaba");
         //---------------------------
 
         return dfa;
 
     }//createDFA
+
+    //checks if string is accepted by dfa
+    //loops through dfa and compares to a given string character
+    public void validate(DFA dfa, String s) {
+        Transition transition = null;
+        boolean match = true;
+
+        //string index
+        int j = 0;
+
+        for (int i=0; i<dfa.getDFA().size(); i++) {
+            transition = dfa.getDFA().get(i);
+
+            System.out.println(i);
+            System.out.println(j);
+            System.out.println(transition.transitionSymbol);
+            System.out.println(s.charAt(j));
+
+            //check if input is in alphabet
+            //-----------
+            if (!(isAlphabet(s.charAt(j)))) {
+                match = false;
+                System.out.println("not part of alphabet");
+                break;
+            }
+            //-----------
+
+            //repeat state conditions
+            //-----------
+            //if repeat state but symbols don't match
+            if (transition.startState.stateID == transition.endState.stateID &&
+            s.charAt(j) != transition.transitionSymbol &&
+            dfa.getDFA().size() != 1) {
+
+                System.out.println("uneeded symbol");
+
+                //exceptions
+                if (i<dfa.getDFA().size()-1 && dfa.getDFA().get(i+1).endState.stateID == dfa.getDFA().get(i+1).startState.stateID) {
+                    continue;
+                }
+                else if (i<dfa.getDFA().size()-1 && dfa.getDFA().get(i+1).transitionSymbol == s.charAt(j)) {
+                    continue;
+                }
+                
+                //if exceptions don't apply
+                i++;
+                transition = dfa.getDFA().get(i);
+
+                //dfa out of bounds check
+                if (i>= dfa.getDFA().size()) {
+                    break;
+                }
+            }
+
+            //if repeat state and symbols do match
+            else if (transition.startState.stateID == transition.endState.stateID &&
+            s.charAt(j) == transition.transitionSymbol &&
+            s.length() != 1) {
+
+                System.out.println("repeat symbol");
+
+                //string out of bounds check
+                if (j >= s.length()-1) {
+                    break;
+                }
+
+                j++;
+
+                //exception
+                if (dfa.getDFA().get(i+1).transitionSymbol == s.charAt(j)) {
+                    continue;
+                }
+                else {
+                    i--;
+                }
+
+                //new loop iteration if exceptions don't apply
+                continue;
+            }
+            //------------
+
+            //if symbols don't match
+            //------------
+            if (transition.transitionSymbol != s.charAt(j)) {
+                match = false;
+                System.out.println("not match");
+                break;
+            }
+            //------------
+
+            //break conditions
+            //check if accept state reached and string has been iterated through
+            if (transition.endState.acceptState && j>=s.length()-1) {
+                break;
+            }
+            //check if either dfa or string indexes out of bounds
+            else if (transition.endState.stateID == transition.startState.stateID && ((i>=dfa.getDFA().size()-1 && j<s.length()-1) | (i<dfa.getDFA().size()-1 && j>=s.length()-1))) {
+                match = false;
+                System.out.println("string exceeds dfa vice versa");
+                break;
+            }
+
+            //check if j out of bounds, otherwise continue loop
+            if (j >= s.length()) {
+                break;
+            }
+            else j++;
+        }
+
+            //check if last symbol is a match
+            if (transition.transitionSymbol != s.charAt(s.length()-1)) {
+                match = false;
+                System.out.println("last symbol not match");
+            }
+
+            //output results
+            if (match && transition != null && (transition.endState.acceptState | transition.isFillerTransition)) {
+                System.out.println("true");
+            }
+            else System.out.println("false");
+        
+    }//validate
 
 }//RegexReader

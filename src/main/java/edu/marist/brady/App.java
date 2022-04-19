@@ -27,7 +27,8 @@ public final class App {
         //generate NFA based on first line of input file
         nfa = reader.createNFA();
 
-        reader.createDFA(nfa);
+        //convert NFA to DFA
+        dfa = reader.createDFA(nfa);
 
         System.exit(returnCode);
     }
