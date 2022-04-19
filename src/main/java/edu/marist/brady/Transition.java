@@ -10,6 +10,7 @@ public final class Transition {
     public State startState;
     public State endState;
     public char transitionSymbol;
+    public boolean isFillerTransition;
     private static Map<Character, ArrayList<Entry<State, State>>> transitionMap = new HashMap<Character, ArrayList<Entry<State, State>>>();
     private static ArrayList<Entry<State, State>> transitions;
 
@@ -17,6 +18,7 @@ public final class Transition {
         this.startState = start;
         this.endState = end;
         this.transitionSymbol = key;
+        this.isFillerTransition = false;
     }//Transition constructor
 
     public static void addToMap(Transition transition) {
