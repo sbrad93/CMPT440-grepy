@@ -2,7 +2,7 @@ package edu.marist.brady;
 
 import java.util.LinkedList;
 
-//NFA class
+//DFA class
 //Linked list of state transitions
 public final class DFA {
 
@@ -10,13 +10,13 @@ public final class DFA {
 
     public DFA() {
         this.dfa = new LinkedList<Transition>();
-    }//NFA constructor
+    }//DFA constructor
 
     public LinkedList<Transition> getDFA() {
         return dfa;
-    }//getNFA
+    }//getDFA
 
-    public void setNFA(LinkedList<Transition> newDFA) {
+    public void setDFA(LinkedList<Transition> newDFA) {
         this.dfa = newDFA;
-    }//setNFA
+    }//setDFA
 }
