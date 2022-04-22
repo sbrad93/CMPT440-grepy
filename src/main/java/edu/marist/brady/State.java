@@ -22,5 +22,5 @@ public final class State {
 
     public void setAcceptState(boolean foo) {
         this.acceptState = foo;
-    }
+    }//setAcceptState
 }

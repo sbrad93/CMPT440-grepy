@@ -2,9 +2,9 @@ package edu.marist.brady;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
-
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.SystemMenuBar;
 
 /**
  * Main app class.
@@ -15,7 +15,7 @@ public final class App {
     }
 
     /**
-     * Says hello to the world!
+     * Grep for regular expressions
      * @param args The arguments of the program.
      * @throws FileNotFoundException
      */
@@ -26,14 +26,15 @@ public final class App {
 
         NFA nfa = null;
         DFA dfa = null;
+        boolean res = false;
 
         System.out.println();
         System.out.println("Welcome to Grepy 1.0!");
         System.out.print("Please enter your file path: ");
-        //Scanner in = new Scanner(System.in);
-        //File myFile = new File(in.nextLine());
+        Scanner in = new Scanner(System.in);
+        File myFile = new File(in.nextLine());
 
-        File myFile = new File("/Users/shannonbrady/Desktop/CMPT440-grepy/filename.txt");
+        //File myFile = new File("/Users/shannonbrady/Desktop/CMPT440-grepy/filename.txt");
 
         //read input file
         RegexReader reader = new RegexReader();
@@ -45,15 +46,44 @@ public final class App {
         //convert NFA to DFA
         dfa = reader.createDFA(nfa);
 
-        //validate strings in file
-        Scanner scanner = new Scanner(myFile);
-        scanner.nextLine();
-        // while (scanner.hasNextLine()) {
-        //     String line = scanner.nextLine();
-        //     reader.validate(dfa, line);
-        // }
+        try {
+            Scanner scanner = new Scanner(myFile);
+            FileWriter writer = new FileWriter("accepted_strings.txt");
 
-        //in.close();
+            //ignore first line (contains regex expression)
+            scanner.nextLine();
+
+            writer.write("Accepted Strings\n\n");
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+
+                //validate strings in file
+                res = reader.validate(dfa, line);
+    
+                //write accepted strings to output file
+                if (res) {
+                    if (line == "") {
+                        line = "{empty string}";
+                    }
+                    writer.write(line + "\n");
+                }
+            }
+
+            System.out.println("\nCheck out the following files for your results:");
+            System.out.println("nfa.txt");
+            System.out.println("dfa.txt");
+            System.out.println("accepted_strings.txt\n");
+            System.out.println("Have a great day!\n");
+
+            writer.close();
+            scanner.close();
+        } catch (IOException e) {
+            System.out.println("Something blew up. Please try again.");
+            e.printStackTrace();
+        }
+
+        in.close();
         System.exit(returnCode);
     }
 }
