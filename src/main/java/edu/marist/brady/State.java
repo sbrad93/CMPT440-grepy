@@ -1,26 +1,36 @@
 package edu.marist.brady;
 
-//State class
+/**
+ * State class
+ */
 public final class State {
 
-    public int stateID;
-    public boolean acceptState;
+    private int stateID;
+    private boolean acceptState;
 
-    public State(int ID) {
-        this.stateID = ID;
+    public State(int id) {
+        this.stateID = id;
         this.acceptState = false;
         RegexReader.stateCount++;
-    }//State constructor
+    } //State constructor
 
     public State getState() {
         return this;
-    }//getState
+    } //getState
+
+    public int getStateID() {
+        return this.stateID;
+    }
 
     public void setStateID(int newID) {
         this.stateID = newID;
-    }//setState
+    } //setState
+
+    public boolean getAcceptState() {
+        return this.acceptState;
+    } //getAcceptState
 
     public void setAcceptState(boolean foo) {
         this.acceptState = foo;
-    }//setAcceptState
+    } //setAcceptState
 }

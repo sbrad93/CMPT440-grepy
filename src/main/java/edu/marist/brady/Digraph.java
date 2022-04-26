@@ -4,6 +4,9 @@ import java.util.*;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Digraph class
+ */
 public final class Digraph {
     private String name;
     private HashSet<Transition> transitions;
@@ -23,20 +26,20 @@ public final class Digraph {
             writer.write("digraph " + this.name + " {\n\n");
 
             for (Transition t : transitions) {
-                if (t.endState.acceptState) {
+                if (t.getEndState().getAcceptState()) {
                     nodeShape = "doublecircle";
                 }
                 else nodeShape = "circle";
-                writer.write("node [ shape = " + nodeShape + " ]; " + t.endState.stateID + ";\n");
+                writer.write("node [ shape = " + nodeShape + " ]; " + t.getEndState().getStateID() + ";\n");
             }
 
             writer.write("\n");
 
             for (int i=0; i<nfa.getNFA().size(); i++) {
-                char key = nfa.getNFA().get(i).transitionSymbol;
-                writer.write(nfa.getNFA().get(i).startState.stateID + 
+                char key = nfa.getNFA().get(i).getTransitionSymbol();
+                writer.write(nfa.getNFA().get(i).getStartState().getStateID() + 
                     " -> " + 
-                    nfa.getNFA().get(i).endState.stateID + 
+                    nfa.getNFA().get(i).getEndState().getStateID() + 
                     " [ label = \"" + key + "\" ];\n");
             }
 
@@ -71,20 +74,20 @@ public final class Digraph {
             writer.write("digraph " + this.name + " {\n\n");
 
             for (Transition t : transitions) {
-                if (t.endState.acceptState) {
+                if (t.getEndState().getAcceptState()) {
                     nodeShape = "doublecircle";
                 }
                 else nodeShape = "circle";
-                writer.write("node [ shape = " + nodeShape + " ]; " + t.endState.stateID + ";\n");
+                writer.write("node [ shape = " + nodeShape + " ]; " + t.getEndState().getStateID() + ";\n");
             }
 
             writer.write("\n");
 
             for (int i=0; i<dfa.getDFA().size(); i++) {
-                char key = dfa.getDFA().get(i).transitionSymbol;
-                writer.write(dfa.getDFA().get(i).startState.stateID + 
+                char key = dfa.getDFA().get(i).getTransitionSymbol();
+                writer.write(dfa.getDFA().get(i).getStartState().getStateID() + 
                     " -> " + 
-                    dfa.getDFA().get(i).endState.stateID + 
+                    dfa.getDFA().get(i).getEndState().getStateID() + 
                     " [ label = \"" + key + "\" ];\n");
             }
 

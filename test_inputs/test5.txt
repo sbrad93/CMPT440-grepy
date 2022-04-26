@@ -1,0 +1,6 @@
+a*ba+b
+babb
+aaaaaaab
+aab
+abababab
+abcdef

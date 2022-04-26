@@ -1,0 +1,9 @@
+a*b*
+ab
+a
+b
+aa
+bb
+abb
+
+aaaaaabbbbbb

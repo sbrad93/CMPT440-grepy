@@ -32,9 +32,9 @@ public final class App {
         System.out.println("Welcome to Grepy 1.0!");
         System.out.print("Please enter your file path: ");
         Scanner in = new Scanner(System.in);
-        File myFile = new File(in.nextLine());
+        //File myFile = new File(in.nextLine());
 
-        //File myFile = new File("/Users/shannonbrady/Desktop/CMPT440-grepy/filename.txt");
+        File myFile = new File("/Users/shannonbrady/Desktop/CMPT440-grepy/CMPT440-grepy/test_inputs/test5.txt");
 
         //read input file
         RegexReader reader = new RegexReader();
@@ -51,9 +51,9 @@ public final class App {
             FileWriter writer = new FileWriter("accepted_strings.txt");
 
             //ignore first line (contains regex expression)
-            scanner.nextLine();
+            String regex = scanner.nextLine();
 
-            writer.write("Accepted Strings\n\n");
+            writer.write("Accepted Strings for " + regex + "\n\n");
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
@@ -63,7 +63,7 @@ public final class App {
     
                 //write accepted strings to output file
                 if (res) {
-                    if (line == "") {
+                    if (line.equals("")) {
                         line = "{empty string}";
                     }
                     writer.write(line + "\n");
