@@ -2,8 +2,10 @@ package edu.marist.brady;
 
 import java.util.LinkedList;
 
-//NFA class
-//Linked list of state transitions
+/**
+ * NFA class
+ * Linked list of state transitions
+ */
 public final class NFA {
 
     private LinkedList<Transition> nfa;

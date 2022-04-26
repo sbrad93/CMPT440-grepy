@@ -18,7 +18,7 @@ public final class RegexReader {
     public RegexReader() {
         this.myRegex = "";
         this.myAlphabet = new HashSet<Character>();
-    }//RegexReader constructor
+    } //RegexReader constructor
 
     //reads input file and learns alphabet of language
     public void read(File path) {
@@ -66,7 +66,7 @@ public final class RegexReader {
         }
 
         return chars;
-    }//getChars
+    } //getChars
 
     //returns boolean indicating whether given character is part of language
     private boolean isAlphabet(char charIn) {
@@ -80,17 +80,17 @@ public final class RegexReader {
         return ans;
     } //isAlphabet
 
-    // //outputs NFA in string format
-    // private void printNFA(NFA nfa) {
-    //     for (int j=0; j< nfa.getNFA().size(); j++)
-    //     System.out.println(nfa.getNFA().get(j).transitionString());
-    // }
+    //outputs NFA in string format
+    private void printNFA(NFA nfa) {
+        for (int j=0; j< nfa.getNFA().size(); j++)
+        System.out.println(nfa.getNFA().get(j).transitionString());
+    }
 
-    // //outputs DFA in string format
-    // private void printDFA(DFA dfa) {
-    //     for (int j=0; j< dfa.getDFA().size(); j++)
-    //     System.out.println(dfa.getDFA().get(j).transitionString());
-    // }
+    //outputs DFA in string format
+    private void printDFA(DFA dfa) {
+        for (int j=0; j< dfa.getDFA().size(); j++)
+        System.out.println(dfa.getDFA().get(j).transitionString());
+    }
 
     //inserts "." symbol wherever concatenation is necessary
     private String addConcat(String regex) {
@@ -115,7 +115,7 @@ public final class RegexReader {
         res += regex.charAt(regex.length() - 1)+"";
 
         return res;
-    }//addConcat
+    } //addConcat
 
     //reorders regex string to match operator precedence
     public String orderRegex(String regex) {
@@ -179,7 +179,7 @@ public final class RegexReader {
         finalNFA = nfaStack.pop();
         
         //set accept state
-        finalNFA.getNFA().get(finalNFA.getNFA().size()-1).endState.setAcceptState(true);
+        finalNFA.getNFA().get(finalNFA.getNFA().size()-1).getEndState().setAcceptState(true);
 
         //printNFA(nfa);
 
@@ -189,7 +189,7 @@ public final class RegexReader {
 
         return finalNFA;
 
-    }//createNFA
+    } //createNFA
 
     //adds nfa transition for alphabet symbols
     private void addSymbol(char sym) {
@@ -205,7 +205,7 @@ public final class RegexReader {
 
         //push tempNFA to nfa stack
         nfaStack.push(tempNFA);
-    }//addSymbol
+    } //addSymbol
 
     //switch statement based on regex operation
     private void compute() {
@@ -231,7 +231,7 @@ public final class RegexReader {
                     break;
             }
         }
-    }//compute
+    } //compute
 
     //union (+) operation in Thompson's algorithm
     private void union() {
@@ -242,7 +242,7 @@ public final class RegexReader {
         //another symbol must be added for the middle portion of final nfa (ex: a+b ---> another a transition needed)
 
         //add additional symbol
-        addSymbol(tempNFA1.getNFA().getLast().transitionSymbol);
+        addSymbol(tempNFA1.getNFA().getLast().getTransitionSymbol());
 
         //create temporary nfa with this new transtion
         NFA tempNFA3 = nfaStack.pop();
@@ -251,24 +251,24 @@ public final class RegexReader {
         //start/end states need to switch for tempNFA3 and tempNFA2
 
         //local variables for start/end states for better readability
-        int temp1Start = tempNFA2.getNFA().getLast().startState.stateID;
-        int temp3Start = tempNFA3.getNFA().getLast().startState.stateID;
-        int temp1End = tempNFA2.getNFA().getLast().endState.stateID;
-        int temp3End = tempNFA3.getNFA().getLast().endState.stateID;
+        int temp1Start = tempNFA2.getNFA().getLast().getStartState().getStateID();
+        int temp3Start = tempNFA3.getNFA().getLast().getStartState().getStateID();
+        int temp1End = tempNFA2.getNFA().getLast().getEndState().getStateID();
+        int temp3End = tempNFA3.getNFA().getLast().getEndState().getStateID();
 
         //switch start states
-        tempNFA2.getNFA().getLast().startState.setStateID(temp1Start+2);
-        tempNFA3.getNFA().getLast().startState.setStateID(temp3Start-2);
+        tempNFA2.getNFA().getLast().getStartState().setStateID(temp1Start+2);
+        tempNFA3.getNFA().getLast().getStartState().setStateID(temp3Start-2);
 
         //switch end states
-        tempNFA2.getNFA().getLast().endState.setStateID(temp1End+2);
-        tempNFA3.getNFA().getLast().endState.setStateID(temp3End-2);
+        tempNFA2.getNFA().getLast().getEndState().setStateID(temp1End+2);
+        tempNFA3.getNFA().getLast().getEndState().setStateID(temp3End-2);
 
         //create epsilon transitions
-        Transition t1 = new Transition('e', tempNFA1.getNFA().getLast().endState, tempNFA3.getNFA().getFirst().startState);
-        Transition t2 = new Transition('e', tempNFA1.getNFA().getLast().endState, tempNFA2.getNFA().getFirst().startState);
-        Transition t3 = new Transition('e', tempNFA3.getNFA().getLast().endState, tempNFA3.getNFA().getFirst().startState);
-        Transition t4 = new Transition('e', tempNFA3.getNFA().getLast().endState, tempNFA2.getNFA().getFirst().startState);
+        Transition t1 = new Transition('e', tempNFA1.getNFA().getLast().getEndState(), tempNFA3.getNFA().getFirst().getStartState());
+        Transition t2 = new Transition('e', tempNFA1.getNFA().getLast().getEndState(), tempNFA2.getNFA().getFirst().getStartState());
+        Transition t3 = new Transition('e', tempNFA3.getNFA().getLast().getEndState(), tempNFA3.getNFA().getFirst().getStartState());
+        Transition t4 = new Transition('e', tempNFA3.getNFA().getLast().getEndState(), tempNFA2.getNFA().getFirst().getStartState());
 
         //add all transitions to tempNFA1
         tempNFA1.getNFA().add(t1);
@@ -287,7 +287,7 @@ public final class RegexReader {
 
         //add NFA back into nfa stack
         nfaStack.push(tempNFA1);
-    }//union
+    } //union
 
     //concatentation (.) operation in Thompson's algorithm
     private void concat() {
@@ -296,7 +296,7 @@ public final class RegexReader {
         NFA tempNFA1 = nfaStack.pop();
 
         //create epsilon transition from tempNFA1 to tempNFA2
-        Transition t1 = new Transition('e', tempNFA1.getNFA().getLast().endState, tempNFA2.getNFA().getFirst().startState);
+        Transition t1 = new Transition('e', tempNFA1.getNFA().getLast().getEndState(), tempNFA2.getNFA().getFirst().getStartState());
 
         //add new epsilon transition to tempNFA1
         tempNFA1.getNFA().add(t1);
@@ -308,7 +308,7 @@ public final class RegexReader {
 
         //add NFA back into stack
         nfaStack.push(tempNFA1);
-    }//concatenation
+    } //concatenation
 
     //kleene star (*) operation in Thompson's algorithm
     private void kleene() {
@@ -323,8 +323,8 @@ public final class RegexReader {
         Transition prev = tempNFA.getNFA().removeLast();
 
         //previous transition start/end states
-        int prevStartID = prev.startState.stateID;
-        int prevEndID = prev.endState.stateID;
+        int prevStartID = prev.getStartState().getStateID();
+        int prevEndID = prev.getEndState().getStateID();
 
         //create new start/end states
         State start = new State(prevStartID);
@@ -332,18 +332,18 @@ public final class RegexReader {
 
         //change end state state pointer to new 'start' state
         if (tempNFA.getNFA().size()>1) {
-            tempNFA.getNFA().get(tempNFA.getNFA().size()-1).endState = start.getState();
+            tempNFA.getNFA().get(tempNFA.getNFA().size()-1).setEndState(start.getState());
         }
 
         //update prev state IDs
-        prev.startState.setStateID(prevStartID+1);
-        prev.endState.setStateID(prevEndID+1);
+        prev.getStartState().setStateID(prevStartID+1);
+        prev.getEndState().setStateID(prevEndID+1);
 
         // //create epsilon transitions
-        Transition t1 = new Transition('e', start, prev.startState);
+        Transition t1 = new Transition('e', start, prev.getStartState());
         Transition t2 = new Transition('e', start, next);
-        Transition t3 = new Transition('e', prev.endState, prev.startState);
-        Transition t4 = new Transition('e', prev.endState, next);
+        Transition t3 = new Transition('e', prev.getEndState(), prev.getStartState());
+        Transition t4 = new Transition('e', prev.getEndState(), next);
 
         //add all transitions from tempNFA to finalNFA
         if (tempNFA.getNFA().size() > 1) {
@@ -361,7 +361,7 @@ public final class RegexReader {
         
         //add new nfa to stack
         nfaStack.push(finalNFA);
-    }//kleene
+    } //kleene
 
     private boolean isOnlyKleene(String regex) {
         boolean ans = false;
@@ -388,7 +388,7 @@ public final class RegexReader {
         }
 
         return ans;
-    }
+    } //isOnlyKleene
 
     //converts nfa to dfa
     public DFA createDFA(NFA nfa) {
@@ -396,17 +396,17 @@ public final class RegexReader {
 
         //mark reverse epsilon transitions accordingly
         for (int i=0; i<nfa.getNFA().size(); i++) {
-            if (i != 0 && nfa.getNFA().get(i).endState.stateID < nfa.getNFA().get(i).startState.stateID) {
-                nfa.getNFA().get(i).transitionSymbol = '%';
+            if (i != 0 && nfa.getNFA().get(i).getEndState().getStateID() < nfa.getNFA().get(i).getStartState().getStateID()) {
+                nfa.getNFA().get(i).setTransitionSymbol('%');
             }
         }
 
         //add all non-epsilon transitions to dfa
         //convert marked transitions
         for (int i=0; i<nfa.getNFA().size(); i++) {
-            if (nfa.getNFA().get(i).transitionSymbol != 'e') {
-                if (i!=0 && nfa.getNFA().get(i).transitionSymbol == '%') {
-                    nfa.getNFA().get(i-1).endState.setStateID(nfa.getNFA().get(i).endState.stateID);
+            if (nfa.getNFA().get(i).getTransitionSymbol() != 'e') {
+                if (i!=0 && nfa.getNFA().get(i).getTransitionSymbol() == '%') {
+                    nfa.getNFA().get(i-1).getEndState().setStateID(nfa.getNFA().get(i).getEndState().getStateID());
                 }
                 else dfa.getDFA().add(nfa.getNFA().get(i));
                 
@@ -415,20 +415,20 @@ public final class RegexReader {
 
         //connect end states to the correct start state as needed
         for (int i=0; i<dfa.getDFA().size(); i++) {
-            if (i!=0 && dfa.getDFA().get(i).startState.stateID != dfa.getDFA().get(i-1).endState.stateID) {
-                if (dfa.getDFA().get(i-1).startState.stateID < dfa.getDFA().get(i-1).endState.stateID &&
-                    dfa.getDFA().get(i).startState.stateID != dfa.getDFA().get(i).endState.stateID) {
+            if (i!=0 && dfa.getDFA().get(i).getStartState().getStateID() != dfa.getDFA().get(i-1).getEndState().getStateID()) {
+                if (dfa.getDFA().get(i-1).getStartState().getStateID() < dfa.getDFA().get(i-1).getEndState().getStateID() &&
+                    dfa.getDFA().get(i).getStartState().getStateID() != dfa.getDFA().get(i).getEndState().getStateID()) {
 
-                    dfa.getDFA().get(i).startState = dfa.getDFA().get(i-1).endState;
+                    dfa.getDFA().get(i).setStartState(dfa.getDFA().get(i-1).getEndState());
                 }
-                else if (dfa.getDFA().get(i-1).startState.stateID == dfa.getDFA().get(i-1).endState.stateID &&
-                    dfa.getDFA().get(i).startState.stateID != dfa.getDFA().get(i).endState.stateID) {
+                else if (dfa.getDFA().get(i-1).getStartState().getStateID() == dfa.getDFA().get(i-1).getEndState().getStateID() &&
+                    dfa.getDFA().get(i).getStartState().getStateID() != dfa.getDFA().get(i).getEndState().getStateID()) {
 
-                    dfa.getDFA().get(i).startState = dfa.getDFA().get(i-1).startState;
+                    dfa.getDFA().get(i).setStartState(dfa.getDFA().get(i-1).getStartState());
                 }
             }
             //mark repeating states
-            if (dfa.getDFA().get(i).endState.stateID == dfa.getDFA().get(i).startState.stateID) {
+            if (dfa.getDFA().get(i).getEndState().getStateID() == dfa.getDFA().get(i).getStartState().getStateID()) {
                 dfa.getDFA().get(i).canSkip = true;
                 dfa.getDFA().get(i).isRepeating = true;
             }
@@ -436,9 +436,9 @@ public final class RegexReader {
 
         //connect kleene star operations if necessary
         for (int i=0; i<dfa.getDFA().size(); i++) {
-            if (i != 0 && dfa.getDFA().get(i).startState.stateID == dfa.getDFA().get(i).endState.stateID &&
-                dfa.getDFA().get(i-1).startState.stateID == dfa.getDFA().get(i-1).endState.stateID) {
-                    Transition t = new Transition (dfa.getDFA().get(i).transitionSymbol, dfa.getDFA().get(i-1).endState, dfa.getDFA().get(i).startState);
+            if (i != 0 && dfa.getDFA().get(i).getStartState().getStateID() == dfa.getDFA().get(i).getEndState().getStateID() &&
+                dfa.getDFA().get(i-1).getStartState().getStateID() == dfa.getDFA().get(i-1).getEndState().getStateID()) {
+                    Transition t = new Transition (dfa.getDFA().get(i).getTransitionSymbol(), dfa.getDFA().get(i-1).getEndState(), dfa.getDFA().get(i).getStartState());
                     //addtional transitions to connect kleene star operations added to end of dfa
                     t.canSkip = true;
                     t.isFiller = true;
@@ -448,12 +448,12 @@ public final class RegexReader {
 
         //add accept states if myRegex is only kleene operations
         for (int i=0; i<dfa.getDFA().size(); i++) {
-            if (isOnlyKleene(myRegex) && dfa.getDFA().get(i).startState.stateID == dfa.getDFA().get(i).endState.stateID) {
-                dfa.getDFA().get(i).endState.acceptState = true;
+            if (isOnlyKleene(myRegex) && dfa.getDFA().get(i).getStartState().getStateID() == dfa.getDFA().get(i).getEndState().getStateID()) {
+                dfa.getDFA().get(i).getEndState().setAcceptState(true);
             }
         }
 
-       //printDFA(dfa);
+       printDFA(dfa);
 
        //create DFA DOT output
         Digraph dfaOut = new Digraph("myDFA");
@@ -461,12 +461,13 @@ public final class RegexReader {
 
         return dfa;
 
-    }//createDFA
+    } //createDFA
 
     //checks if string is accepted by dfa
     //loops through dfa and compares to a given string character
     public boolean validate(DFA dfa, String s) {
         Transition t = null;
+        Transition next = null;
         boolean isMatch = true;
 
         //dfa index
@@ -479,14 +480,24 @@ public final class RegexReader {
 
             t = dfa.getDFA().get(i);
 
+            if (i != dfa.getDFA().size()-1) {
+                next = dfa.getDFA().get(i+1);
+            }
+
+            System.out.println(i);
+            System.out.println(j);
+            System.out.println(t.getTransitionSymbol());
+            System.out.println(s.charAt(j));
+            System.out.println();
+
             //conditions for a match
-            if (t.transitionSymbol == s.charAt(j)) {
+            if (t.getTransitionSymbol() == s.charAt(j)) {
                 if (i < dfa.getDFA().size()-1 && j < s.length()-1) {
-                    if (dfa.getDFA().get(i+1).canSkip) {
+                    if (next.canSkip) {
                         if (t.isRepeating)
                             i--;
                     }
-                    else if (t.isRepeating && dfa.getDFA().get(i+1).transitionSymbol != s.charAt(j+1)) {
+                    else if (t.isRepeating && next.getTransitionSymbol() != s.charAt(j+1)) {
                         i--;
                     }
                 }
@@ -498,12 +509,12 @@ public final class RegexReader {
             }
             //skip unecessary transitions
             else if (t.canSkip) {
-              //  System.out.println("can skip");
+               System.out.println("can skip");
                 i++;
                 continue;
             }
             else {
-               // System.out.println("not match");
+               System.out.println("not match");
                 isMatch = false;
                 break;
             }
@@ -515,29 +526,34 @@ public final class RegexReader {
 
         //post-loop conditions
         //if entire dfa isn't traversed
-        if (!isOnlyKleene(myRegex) && i < dfa.getDFA().size()) {
-            isMatch = false;
+        if (next != null) {
+            if (!isOnlyKleene(myRegex) && i < dfa.getDFA().size() && !next.canSkip) {
+                System.out.println("dfa not traversed");
+                isMatch = false;
+            }
         }
         //if dfa is travered but string has remaining characters
-        else if (i == dfa.getDFA().size() && j != s.length()) {
+        if (i == dfa.getDFA().size() && j != s.length()) {
+            System.out.println("string not traversed");
             isMatch = false;
         }
         //empty string
-        else if (!isOnlyKleene(myRegex) && s == "") {
+        else if (!isOnlyKleene(myRegex) && s.equals("")) {
+            System.out.println("not only kleen emypty string");
             isMatch = false;
         }
 
         //output results
-        // if (isOnlyKleene(myRegex) && isMatch && s.length() == 0) {
-        //     System.out.println("true");
-        // }
-        // else if (isMatch && t != null && (t.endState.acceptState | t.canSkip)) {
-        //     System.out.println("true");
-        // }
-        // else if (!isMatch) {
-        //     System.out.println("false");
-        // }
+        if (isOnlyKleene(myRegex) && isMatch && s.length() == 0) {
+            System.out.println("true");
+        }
+        else if (isMatch && t != null && (t.getEndState().getAcceptState() | t.canSkip)) {
+            System.out.println("true");
+        }
+        else if (!isMatch) {
+            System.out.println("false");
+        }
 
         return isMatch;
-    }//validate
-}//RegexReader
+    } //validate
+} //RegexReader

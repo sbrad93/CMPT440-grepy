@@ -1,10 +1,13 @@
 package edu.marist.brady;
 
+/**
+ * Transition class
+ */
 public final class Transition {
 
-    public State startState;
-    public State endState;
-    public char transitionSymbol;
+    private State startState;
+    private State endState;
+    private char transitionSymbol;
     public boolean canSkip;
     public boolean isFiller;
     public boolean isRepeating;
@@ -16,19 +19,43 @@ public final class Transition {
         this.canSkip = false;
         this.isFiller = false;
         this.isRepeating = false;
-    }//Transition constructor
+    } //Transition constructor
 
     //temporary string method for reading transitions
     public String transitionString() {
-        return "Start ID: " + this.startState.stateID + 
-        "\nNext ID: " + this.endState.stateID +
+        return "Start ID: " + this.startState.getStateID() + 
+        "\nNext ID: " + this.endState.getStateID() +
         "\nSymbol: " + this.transitionSymbol + 
-        "\nIsEndStateAcceptState: " + this.endState.acceptState + 
+        "\nIsEndStateAcceptState: " + this.endState.getAcceptState() + 
         "\nisFiller: " + this.isFiller + 
         "\ncanSkip: " + this.canSkip + "\n";
-    }//transitionString
+    } //transitionString
 
     public Transition getTransition() {
         return this;
-    }//getTransition
+    } //getTransition
+
+    public char getTransitionSymbol() {
+        return this.transitionSymbol;
+    } //getTransitionSymbol
+
+    public void setTransitionSymbol(char newSym) {
+        this.transitionSymbol = newSym;
+    } //setTransitionSymbol
+
+    public State getStartState() {
+        return this.startState;
+    } //getStartState
+
+    public void setStartState(State newState) {
+        this.startState = newState;
+    } //setStartState
+
+    public State getEndState() {
+        return this.endState;
+    } //getEndState
+
+    public void setEndState(State newState) {
+        this.endState = newState;
+    } //setEndState
 }

@@ -1,0 +1,7 @@
+b*a+b
+ab
+
+bbbbbbbbab
+bab
+baaab
+abc
