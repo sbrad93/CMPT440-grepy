@@ -533,11 +533,13 @@ public final class RegexReader {
 
             //conditions for a match
             if (t.getTransitionSymbol() == s.charAt(j)) {
-                if (i < dfa.getDFA().size() - 1 && j < s.length() - 1 && next.canSkip && t.isRepeating) {
-                    i--;
-                } else if (t.isRepeating && next.getTransitionSymbol() != s.charAt(j + 1)) {
-                    i--;
-                }
+                if (i < dfa.getDFA().size() - 1 && j < s.length() - 1) {
+                    if (next.canSkip && t.isRepeating) {
+                        i--;
+                    } else if (t.isRepeating && next.getTransitionSymbol() != s.charAt(j + 1)) {
+                        i--;
+                    }
+                } 
             } else if (!isAlphabet(s.charAt(j))) { //identify characters not part of alphabet
                 isMatch = false;
                 break;
