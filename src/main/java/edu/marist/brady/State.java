@@ -1,18 +1,21 @@
 package edu.marist.brady;
 
 /**
- * State class
+ * State class.
  */
 public final class State {
 
     private int stateID;
     private boolean acceptState;
 
+    /**
+     * State constructor.
+     */
     public State(int id) {
         this.stateID = id;
         this.acceptState = false;
         RegexReader.stateCount++;
-    } //State constructor
+    }
 
     public State getState() {
         return this;
@@ -20,7 +23,7 @@ public final class State {
 
     public int getStateID() {
         return this.stateID;
-    }
+    } //getStateID
 
     public void setStateID(int newID) {
         this.stateID = newID;

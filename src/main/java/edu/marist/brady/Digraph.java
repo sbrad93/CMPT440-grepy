@@ -5,16 +5,19 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Digraph class
+ * Digraph class.
  */
 public final class Digraph {
     private String name;
     private HashSet<Transition> transitions;
     private String nodeShape;
 
+    /**
+     * Digraph constructor.
+     */
     public Digraph(String graphName) {
         this.name = graphName;
-    }//Digraph constructor
+    }
 
     //NFA methods ---------------------------------------------
     //writes DOT output to file for NFA
@@ -49,7 +52,7 @@ public final class Digraph {
             System.out.println("Something blew up.");
             e.printStackTrace();
         }
-    }//output for NFA
+    } //output for NFA
 
     //builds set of transitions in NFA
     private void findNodes(NFA nfa) {
@@ -60,7 +63,7 @@ public final class Digraph {
                 transitions.add(nfa.getNFA().get(i));
             }
         }
-    }//findNodes for NFA
+    } //findNodes for NFA
 
     //----------------------------------------------------------
 
@@ -97,7 +100,7 @@ public final class Digraph {
             System.out.println("Something blew up.");
             e.printStackTrace();
         }
-    }//output for DFA
+    } //output for DFA
 
     //builds set of transitions in DFA
     private void findNodes(DFA dfa) {
@@ -108,7 +111,7 @@ public final class Digraph {
                 transitions.add(dfa.getDFA().get(i));
             }
         }
-    }//findNodes for DFA
+    } //findNodes for DFA
 
     //----------------------------------------------------------
 }

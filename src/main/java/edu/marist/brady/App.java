@@ -15,7 +15,7 @@ public final class App {
     }
 
     /**
-     * Grep for regular expressions
+     * Grep for regular expressions.
      * @param args The arguments of the program.
      * @throws FileNotFoundException
      */
@@ -32,9 +32,11 @@ public final class App {
         System.out.println("Welcome to Grepy 1.0!");
         System.out.print("Please enter your file path: ");
         Scanner in = new Scanner(System.in);
-        //File myFile = new File(in.nextLine());
 
-        File myFile = new File("/Users/shannonbrady/Desktop/CMPT440-grepy/CMPT440-grepy/test_inputs/test5.txt");
+        //test input files located in test_inputs folder
+        File myFile = new File(in.nextLine());
+
+        System.out.println("\n--------------------------------------------------");
 
         //read input file
         RegexReader reader = new RegexReader();
@@ -53,6 +55,7 @@ public final class App {
             //ignore first line (contains regex expression)
             String regex = scanner.nextLine();
 
+            System.out.println("\nAccepted Strings:");
             writer.write("Accepted Strings for " + regex + "\n\n");
 
             while (scanner.hasNextLine()) {
@@ -60,12 +63,13 @@ public final class App {
 
                 //validate strings in file
                 res = reader.validate(dfa, line);
-    
+
                 //write accepted strings to output file
                 if (res) {
-                    if (line.equals("")) {
+                    if ("".equals(line)) {
                         line = "{empty string}";
                     }
+                    System.out.println(line);
                     writer.write(line + "\n");
                 }
             }

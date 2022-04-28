@@ -12,6 +12,9 @@ public final class Transition {
     public boolean isFiller;
     public boolean isRepeating;
 
+    /**
+     * Transition constructor.
+     */
     public Transition(char key, State start, State end) {
         this.startState = start;
         this.endState = end;
@@ -19,7 +22,7 @@ public final class Transition {
         this.canSkip = false;
         this.isFiller = false;
         this.isRepeating = false;
-    } //Transition constructor
+    }
 
     //temporary string method for reading transitions
     public String transitionString() {
