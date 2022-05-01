@@ -62,7 +62,7 @@ To skip tests, add `-Dmaven.test.skip=true` as an argument to your Maven command
     * The previously created DFA is then used to validate various strings included in the initial input file. Accepted strings are printed in the terminal as well as to standard file output. The associated file name is accepted_strings.txt. Such is achieved by the following functions:
     <br>
 
-        * RegexReader.validate: checks if a given strign is accepted by the DFA
+        * RegexReader.validate: checks if a given string is accepted by the DFA
 
     <br>
     <br>
@@ -73,7 +73,7 @@ To skip tests, add `-Dmaven.test.skip=true` as an argument to your Maven command
     
 ## Implementation Notes
 1. Grouping symbols "()" are not supported in this version. Precendence is solely configured by RegexReader.orderRegex, which takes on the following format: [kleene operations][individual input symbols][union operations]
-    * ex. a*b*ababa+b
+    * ex. a\*b\*ababa+b
     * ex. a*ba+b
 <br>
 <br>
